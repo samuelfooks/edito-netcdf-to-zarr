@@ -196,7 +196,7 @@
           "type": "string",
           "title": "to run netcdf2zarr input a link to a netcdf file",
           "description": "to run netcdf2zarr input a link to a netcdf file in the yaml file.",
-          "default": "input_file.yaml"
+          "default": "https://s3.waw3-1.cloudferro.com/emodnet/emodnet_native/emodnet_chemistry/eutrophication_by_sea_regions_baltic_sea/water_body_phosphate_masked_using_relative_error_threshold_0.5/Water_body_phosphate.4Danl.nc"
         }
       }
     }
