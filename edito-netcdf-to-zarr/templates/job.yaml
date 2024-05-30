@@ -1,0 +1,49 @@
+{{- $fullName := include "library-chart.fullname" . -}}
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-main-container
+        image: samfooks/edito-netcdf2zarr:latest
+        env:
+        - name: YAML_FILE_PATH
+          value: "{{ .Values.processInputs.YAML_FILE_PATH }}"
+        - name: EDITO_INFRA_OUTPUT
+          value: "/output-data"
+        - name: USER_NAME
+          value: "{{ .Release.Namespace }}"
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets3
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets3
+              key: AWS_SECRET_ACCESS_KEY
+        - name: AWS_SESSION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets3
+              key: AWS_SESSION_TOKEN
+        - name: AWS_S3_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets3
+              key: AWS_S3_ENDPOINT
+        - name: AWS_DEFAULT_REGION
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets3
+              key: AWS_DEFAULT_REGION
+        resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        command: ["python", "netcdf_to_zarr.py", "{{ .Values.processInputs.inputURL }}"]
+      restartPolicy: Never
+  backoffLimit: 4

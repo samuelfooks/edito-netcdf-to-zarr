@@ -1,0 +1,6 @@
+xarray
+zarr
+dask
+numpy
+netcdf4
+fiona
